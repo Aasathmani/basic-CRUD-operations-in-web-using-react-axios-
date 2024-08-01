@@ -13,6 +13,8 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
     year: ''
   });
 
+  const [errors,setErrors]=useState({});
+
   useEffect(() => {
     if (editEmployee) {
       setFormData({
@@ -38,13 +40,28 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
     });
   };
 
+  const validate=()=>{
+    let tempError={};
+    tempError.name=formData.name ? "" : "Name is required";
+    tempError.age=formData.age ? "" : "Age is required";
+    tempError.dept = formData.dept ? "" : "Department is required";
+    tempError.year = formData.year ? "" : "Year is required";
+    setErrors(tempError);
+    return Object.values(tempError).every(x=>x=== '');
+
+
+
+  }
+
   const handleSubmit = () => {
+    if(validate()){
     if (editEmployee) {
       dispatch(updateEmployee({ ...formData, id: editEmployee.id }));
     } else {
       dispatch(addEmployee(formData));
     }
     handleClose();
+  }
   };
 
   return (
@@ -59,6 +76,8 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
           fullWidth
           value={formData.name}
           onChange={handleChange}
+          error={!!errors.name}
+          helperText={errors.name}
         />
         <TextField
           margin="dense"
@@ -67,6 +86,9 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
           fullWidth
           value={formData.dept}
           onChange={handleChange}
+          required
+          error={!!errors.dept}
+          helperText={errors.dept}
         />
         <TextField
           margin="dense"
@@ -75,6 +97,9 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
           fullWidth
           value={formData.age}
           onChange={handleChange}
+          required
+          error={!!errors.age}
+          helperText={errors.age}
         />
         <TextField
           margin="dense"
@@ -83,6 +108,9 @@ const EmployeeForm = ({ open, handleClose, editEmployee }) => {
           fullWidth
           value={formData.year}
           onChange={handleChange}
+          required
+          error={!!errors.year}
+          helperText={errors.year}
         />
       </DialogContent>
       <DialogActions>
